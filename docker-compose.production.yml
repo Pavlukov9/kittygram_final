@@ -29,7 +29,7 @@ services:
     image: pavlukov9/kittygram_gateway
     env_file: .env
     ports:
-      - 9080:80
+      - 9000:80
     volumes:
       - static:/static
       - media:/app/media/
