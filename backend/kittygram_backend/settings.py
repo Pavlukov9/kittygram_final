@@ -4,14 +4,14 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-cg6*%6d51ef8f#4!r3*$vmxm4)abgjw8mo!4y-q*uq1!4$-89$'
+SECRET_KEY = 'SEKRET_KEY'
 
-DEBUG = True
+DEBUG = False
 # На счёт переменных окружения: сделал как обычно через .env,
 # но GitHub Actions не пропускает это и выдаёт ошибку,
 # что не может найти SECRET_KEY. Попробовал даже создать secret в
 # в настройках репозитория и всё равно исход тот же - ошибка(
-
+# Пришёл к выводу, что поставлю дефолтные значения этих переменных.
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
