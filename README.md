@@ -19,34 +19,36 @@
 
 ## Установка (указана для Linux)
 
-    1. Склонируйте репозиторий на свой компьютер:
-    ```git clone https://github.com/Pavlukov9/kittygram_final.git```
+1. Склонируйте репозиторий на свой компьютер:
+```
+git clone https://github.com/Pavlukov9/kittygram_final.git
+```
 
-    2. Создайте файл `.env` и заполните его своими данными. Все необходимые переменные указаны в файле `.env.example` в корневой директории проекта.
+2. Создайте файл `.env` и заполните его своими данными. Все необходимые переменные указаны в файле `.env.example` в корневой директории проекта.
 
 ## Создание Docker-образов
 
-    1. Создание образов. Замените `<username>` на свой логин на DockerHub:
+1. Создание образов. Замените `<username>` на свой логин на DockerHub:
 
-    ```
-    cd backend
-    docker build -t <username>/kittygram_backend .
-    cd -
-    cd frontend
-    docker build -t <username>/kittygram_frontend .
-    cd -
-    cd nginx
-    docker build -t <username>/kittygram_nginx .
-    cd -
-    ```
+```
+cd backend
+docker build -t <username>/kittygram_backend .
+cd -
+cd frontend
+docker build -t <username>/kittygram_frontend .
+cd -
+cd nginx
+docker build -t <username>/kittygram_nginx .
+cd -
+```
 
-    2. Загрузите образы на свой аккаунт на DockerHub:
+2. Загрузите образы на свой аккаунт на DockerHub:
 
-    ```
-    docker push <username>/kittygram_backend
-    docker push <username>/kittygram_frontend
-    docker push <username>/kittygram_nginx
-    ```
+```
+docker push <username>/kittygram_backend
+docker push <username>/kittygram_frontend
+docker push <username>/kittygram_nginx
+```
 
 ## Деплой на сервере
 
