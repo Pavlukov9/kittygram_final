@@ -50,98 +50,106 @@
 
 ## Деплой на сервере
 
-    1. Подключитесь к удалённому серверу (показан пример кода в GitBash):
+1. Подключитесь к удалённому серверу (показан пример кода в GitBash):
     
-    ```
-    ssh -i путь_до_файла_с_SSH_ключом/название_файла_с_SSH_ключом_без_расширения login@ip 
-    ```
+```
+ssh -i путь_до_файла_с_SSH_ключом/название_файла_с_SSH_ключом_без_расширения login@ip 
+```
 
-    2. Создайте на сервере директорию `kittygram`
+2. Создайте на сервере директорию `kittygram`
 
-    ```mkdir kittygram```
+ ```
+ mkdir kittygram
+ ```
 
-    3. Установите Docker Compose на удалённый сервер:
+3. Установите Docker Compose на удалённый сервер:
 
-    ```
-    sudo apt update
-    sudo apt install curl
-    sudo -fSL https://get.docker.com -o get-docker.sh
-    sudo sh ./get-docker.sh
-    sudo apt-get install docker-compose-plugin
-    ```
+```
+sudo apt update
+sudo apt install curl
+sudo -fSL https://get.docker.com -o get-docker.sh
+sudo sh ./get-docker.sh
+sudo apt-get install docker-compose-plugin
+```
 
-    4. Создайте на сервере в директории `/kittygram` файлы `docker-compose.production.yml` и `.env` и скопируйте в них код из проекта при помощи редактора `nano` (чтобы сохранить код в редакторе `nano`: `Ctrl+S`, чтобы выйти из этого редактора: `Ctrl+X`):
+4. Создайте на сервере в директории `/kittygram` файлы `docker-compose.production.yml` и `.env` и скопируйте в них код из проекта при помощи редактора `nano` (чтобы сохранить код в редакторе `nano`: `Ctrl+S`, чтобы выйти из этого редактора: `Ctrl+X`):
 
-    ```
-    touch docker-compose.production.yml
-    touch .env
-    sudo nano docker-compose.production.yml
-    sudo nano .env
-    ``` 
+```
+touch docker-compose.production.yml
+touch .env
+sudo nano docker-compose.production.yml
+sudo nano .env
+``` 
 
-    5. Запустите Docker Compose в режиме демона и проверьте, что все контейнеры запустились:
+5. Запустите Docker Compose в режиме демона и проверьте, что все контейнеры запустились:
 
-    ```
-    sudo docker compose -f docker-compose.production.yml up -d
-    sudo docker compose -f docker-compose.production.yml ps
-    ```
+```
+sudo docker compose -f docker-compose.production.yml up -d
+sudo docker compose -f docker-compose.production.yml ps
+```
 
-    6. Выполните миграции, соберите статические файлы и скопируйте их в `/backend_static/static/`:
+6. Выполните миграции, соберите статические файлы и скопируйте их в `/backend_static/static/`:
 
-    ```
-    sudo docker-compose -f docker-compose.production.yml exec backend python manage.py migrate
-    sudo docker-compose -f docker-compose.production.yml exec backend python manage.py collectstatic
-    sudo docker-compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
-    ```
+```
+sudo docker-compose -f docker-compose.production.yml exec backend python manage.py migrate
+sudo docker-compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+sudo docker-compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+```
 
-    7. Откройте файл конфигурации Nginx в редакторе nano и измените настройки `location` в секции `server`:
+7. Откройте файл конфигурации Nginx в редакторе nano и измените настройки `location` в секции `server`:
 
-    ```
-    sudo nano /etc/nginx/sites-enabled/default
-    ```
-    ```
-    location / {
-        proxy_set_header Host $http_host;
-        proxy_pass http://127.0.0.1:9080;
-    }
-    ```
+```
+sudo nano /etc/nginx/sites-enabled/default
+```
+```
+location / {
+    proxy_set_header Host $http_host;
+    proxy_pass http://127.0.0.1:9080;
+}
+```
 
-    8. Проверьте правильность конфигурации Nginx:
+8. Проверьте правильность конфигурации Nginx:
 
-    ```sudo nginx -t```
+```
+sudo nginx -t
+```
 
-    Eсли ответ следующий, то ошибок нет:
+Eсли ответ следующий, то ошибок нет:
 
-    ```
-    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-    nginx: configuration file /etc/nginx/nginx.conf test is successful
-    ```
+```
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
 
-    9. Перезапустите Nginx:
+9. Перезапустите Nginx:
 
-    ```sudo service nginx reload```
+```
+sudo service nginx reload
+```
 
 ## Настройка CI/CD
 
-    1. Главный файл workflow уже полностью написан и находится в директории:
+1. Главный файл workflow уже полностью написан и находится в директории:
 
-    ```kittygram/.github/workflows/main.yml```
+```
+kittygram/.github/workflows/main.yml
+```
 
-    2. Чтобы его адаптировать к вашему удалённому серверу, нужно добавить секреты в GitHub Actions:
+2. Чтобы его адаптировать к вашему удалённому серверу, нужно добавить секреты в GitHub Actions:
 
-    ```
-    DOCKER_USERNAME       # имя пользователя на DockerHub
-    DOCKER_PASSWORD       # пароль пользователя на DockerHub
-    HOST                  # IP-адрес сервера
-    USER                  # имя пользователя
-    SSH_KEY               # приватный SSH-ключ
-    SSH_PASSPHRASE        # пароль для SSH-ключа
+```
+DOCKER_USERNAME       # имя пользователя на DockerHub
+DOCKER_PASSWORD       # пароль пользователя на DockerHub
+HOST                  # IP-адрес сервера
+USER                  # имя пользователя
+SSH_KEY               # приватный SSH-ключ
+SSH_PASSPHRASE        # пароль для SSH-ключа
 
-    Если вы хотите получать уведомление в Telegram об успешном выполнении деплоя на сервер, то добавьте ещё:
+Если вы хотите получать уведомление в Telegram об успешном выполнении деплоя на сервер, то добавьте ещё:
 
-    TELEGRAM_TO           # ID вашего телеграм-аккаунта (узнать можно у @userinfobot)
-    TELEGRAM_TOKEN        # токен вашего телеграм-бота (узнать можно у @BotFather)
-    ```
+TELEGRAM_TO           # ID вашего телеграм-аккаунта (узнать можно у @userinfobot)
+TELEGRAM_TOKEN        # токен вашего телеграм-бота (узнать можно у @BotFather)
+```
 
 ## Автор
 
