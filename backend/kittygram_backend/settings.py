@@ -1,17 +1,18 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'SEKRET_KEY'
+SECRET_KEY = os.getenv('SECRET_KEY', default='KEY')
 
-DEBUG = False
-# На счёт переменных окружения: сделал как обычно через .env,
-# но GitHub Actions не пропускает это и выдаёт ошибку,
-# что не может найти SECRET_KEY. Попробовал даже создать secret в
-# в настройках репозитория и всё равно исход тот же - ошибка(
-# Пришёл к выводу, что поставлю дефолтные значения этих переменных.
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG', default=False)
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
